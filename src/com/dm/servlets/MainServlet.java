@@ -38,7 +38,6 @@ public class MainServlet extends HttpServlet {
 		connection = new DBConnection();
 		String queryNumber = request.getParameter("queryNumber");
 		logger.info("Query: " + queryNumber);
-		
 		switch(queryNumber){
 			case "1": {
 				String diseaseName = request.getParameter(StringUtility.DISEASE_NAME);
@@ -66,6 +65,10 @@ public class MainServlet extends HttpServlet {
 				connection.handleQueryThree(diseaseName, measureUnitID, clusterID);
 				break;
 			}
+			case "5":
+				String[] diseaseNames = request.getParameterValues(StringUtility.DISEASE_NAME);
+				Integer goID = Integer.valueOf(request.getParameter(StringUtility.GO_ID));
+				connection.handleQueryFive(diseaseNames, goID);
 		}
 	}
 

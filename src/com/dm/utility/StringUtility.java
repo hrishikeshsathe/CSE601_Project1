@@ -7,4 +7,5 @@ public class StringUtility {
 	public static final String DISEASE_DESCRIPTION = "diseaseDescription";
 	public static final String MEASURE_UNIT_ID = "measureUnitID";
 	public static final String CLUSTER_ID = "clusterID";
+	public static final String GO_ID = "goID";
 }

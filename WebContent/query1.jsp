@@ -35,5 +35,19 @@ Measure Unit ID: <input type="text" name="measureUnitID"></input>
 Cluster ID: <input type="text" name="clusterID"></input>
 <input type="submit" value="Submit">
 </form>
+<br>
+<form name="query5" action="MainServlet" method="get">
+<input type="text" name="queryNumber" value="5"></input>
+<br>
+Disease Name: <input type="checkbox" name="diseaseName" value="AML">AML
+<input type="checkbox" name="diseaseName" value="ALL">ALL
+<input type="checkbox" name="diseaseName" value="Giloblastome">Giloblastome
+<input type="checkbox" name="diseaseName" value="Colon tumor">Colon tumor
+<input type="checkbox" name="diseaseName" value="Breast tumor">Breast tumor
+<input type="checkbox" name="diseaseName" value="Flu">Flu
+<br>
+<input type="text" name="goID"></input>
+<input type="submit" value="Submit">
+</form>
 </body>
 </html>
