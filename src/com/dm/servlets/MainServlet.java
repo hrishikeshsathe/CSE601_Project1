@@ -47,7 +47,7 @@ public class MainServlet extends HttpServlet {
 				logger.info("Disease Type:" + diseaseType);
 				logger.info("Disease Description : " + diseaseDescription);
 				connection.handleQueryOne(diseaseName, diseaseType, diseaseDescription);
-				break; 
+				break;
 			}
 			case "2":{
 				String diseaseDescription = request.getParameter(StringUtility.DISEASE_DESCRIPTION);
@@ -69,6 +69,10 @@ public class MainServlet extends HttpServlet {
 				String[] diseaseNames = request.getParameterValues(StringUtility.DISEASE_NAME);
 				Integer goID = Integer.valueOf(request.getParameter(StringUtility.GO_ID));
 				connection.handleQueryFive(diseaseNames, goID);
+				break;
+			case "6":
+				connection.handleQuerySix();
+				break;
 		}
 	}
 
