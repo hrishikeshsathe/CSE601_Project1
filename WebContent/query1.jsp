@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>Project 1: Data mining</title>
 </head>
 <body>
 	<form name="query1" action="MainServlet" method="get">
@@ -30,10 +30,11 @@
 	</form>
 	<br>
 	<form name="query4" action="MainServlet" method="post">
-		<input type="text" name="queryNumber" value="4"></input> <br> <select
+		<input type="text" name="queryNumber" value="4"></input> <br> 
+		<select
 			name="selectedDisease">
 			<option value="ALL">ALL</option>
-			<option value="AML">AML</option>
+			<option value="AML" selected>AML</option>
 			<option value="Giloblastome">Giloblastome</option>
 			<option value="Colon tumor">Colon tumor</option>
 			<option value="Breast tumor">Breast tumor</option>
