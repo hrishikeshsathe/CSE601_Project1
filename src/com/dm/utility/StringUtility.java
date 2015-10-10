@@ -8,4 +8,84 @@ public class StringUtility {
 	public static final String MEASURE_UNIT_ID = "measureUnitID";
 	public static final String CLUSTER_ID = "clusterID";
 	public static final String GO_ID = "goID";
+	public static final String SELECTED_DISEASE = "selectedDisease";
+	
+	public static final String QUERY_1 = "select d.name,count(dm.p_id) from diagnosis dm "
+			+ "inner join disease d on (dm.ds_id = d.ds_id) where d.name = ? group by d.name "
+			+ "Union "
+			+ "select d.type,count(dm.p_id) from diagnosis dm "
+			+ "inner join disease d on (dm.ds_id = d.ds_id) where d.type = ? group by d.type "
+			+ "Union "
+			+ "select d.description ,count(dm.p_id) from diagnosis dm "
+			+ "inner join disease d on (dm.ds_id = d.ds_id) where d.description = ? group by d.description";
+	
+	public static final String QUERY_2 = "select distinct type from drug where DR_ID in "
+			+ "(select dr.dr_id from drug_use dr where dr.P_ID in (select distinct m.p_id from diagnosis m, "
+			+ "disease d where m.ds_ID = d.DS_ID and d.DESCRIPTION=?))";
+	
+	public static final String QUERY_3 = "select exp from microarray_fact where s_id in "
+			+ "(select s_id from clinical_fact where p_id in "
+			+ "(select distinct p_id from diagnosis where ds_id in "
+			+ "(select ds_id from disease where name = ?)) and s_id is not null) and "
+			+ "pb_id in (select pb_id from probe where U_ID in "
+			+ "(select u_id from gene_cluster where cl_id = ?)) and mu_id = ?";
+	
+	public static final String QUERY_4_A = "select exp from microarray_fact where pb_id in "
+			+ "( select pb_id from probe where u_id in "
+			+ "(select u_id from go_annotation where go_id = ?)) and "
+			+ "s_id in (select s_id from clinical_fact where p_id in "
+			+ "(select distinct p_id from diagnosis where ds_id in "
+			+ "(select ds_id from disease where name = ?)) and s_id is not null)";
+	
+	public static final String QUERY_4_B = "select exp from microarray_fact where pb_id in "
+			+ "( select pb_id from probe where u_id in "
+			+ "(select u_id from go_annotation where go_id = ?)) and "
+			+ "s_id in (select s_id from clinical_fact where p_id in "
+			+ "(select distinct p_id from diagnosis where ds_id in "
+			+ "(select ds_id from disease where name <> ?)) and s_id is not null)";
+	
+	public static final String QUERY_5 = "select exp from microarray_fact where pb_id in "
+			+ "( select pb_id from probe where u_id in "
+			+ "(select u_id from go_annotation where go_id = ?)) and "
+			+ "s_id in (select s_id from clinical_fact where p_id in "
+			+ "(select distinct p_id from diagnosis where ds_id in "
+			+ "(select ds_id from disease where name = ?)) and s_id is not null)";
+	
+	public static final String PART_3_A_1 = "select g.u_id, mf.exp from microarray_fact mf "
+			+ "inner join probe p on mf.pb_id = p.pb_id "
+			+ "inner join gene g on p.u_id = g.u_id where s_id in "
+			+ "(select s_id from clinical_fact where p_id in "
+			+ "(select distinct p_id from diagnosis where ds_id in "
+			+ "(select ds_id from disease where name = ?)) and s_id is not null) order by g.u_id";
+	
+	public static final String PART_3_A_2 = "select g.u_id, mf.exp from microarray_fact mf "
+			+ "inner join probe p on mf.pb_id = p.pb_id "
+			+ "inner join gene g on p.u_id = g.u_id where s_id in "
+			+ "(select s_id from clinical_fact where p_id in "
+			+ "(select distinct p_id from diagnosis where ds_id in "
+			+ "(select ds_id from disease where name != ?)) and s_id is not null) order by g.u_id";
+	
+	public static final String PART_3_B_1 = "select cs.p_id,g.u_id,mf.exp from microarray_fact mf "
+			+ "inner join "
+			+ "probe p on mf.pb_id = p.pb_id "
+			+ "inner join "
+			+ "gene g on p.u_id = g.u_id "
+			+ "inner join "
+			+ "(select * from clinical_sample where p_id in "
+			+ "(select distinct p_id from diagnosis where ds_id in "
+			+ "(select ds_id from disease where name = 'ALL')) "
+			+ "and s_id is not null) cs on mf.s_id=cs.s_id  where g.u_id in ? order by cs.p_id, g.u_id";
+	
+	public static final String PART_3_B_2 = "select cs.p_id,g.u_id,mf.exp from microarray_fact mf "
+			+ "inner join "
+			+ "probe p on mf.pb_id = p.pb_id "
+			+ "inner join "
+			+ "gene g on p.u_id = g.u_id "
+			+ "inner join "
+			+ "(select * from clinical_sample where p_id in "
+			+ "(select distinct p_id from diagnosis where ds_id in "
+			+ "(select ds_id from disease where name != 'ALL')) "
+			+ "and s_id is not null) cs on mf.s_id=cs.s_id  where g.u_id in ? order by cs.p_id, g.u_id";
+	
+	public static final String PART_3_B_3 = "select * from test_samples where u_id in ? order by u_id";
 }

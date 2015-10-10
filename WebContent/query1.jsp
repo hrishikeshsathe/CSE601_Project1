@@ -29,22 +29,35 @@
 			type="submit" value="Submit">
 	</form>
 	<br>
+	<form name="query4" action="MainServlet" method="post">
+		<input type="text" name="queryNumber" value="4"></input> <br> <select
+			name="selectedDisease">
+			<option value="ALL">ALL</option>
+			<option value="AML">AML</option>
+			<option value="Giloblastome">Giloblastome</option>
+			<option value="Colon tumor">Colon tumor</option>
+			<option value="Breast tumor">Breast tumor</option>
+			<option value="Flu">Flu</option>
+		</select> <br> <input type="text" name="goID"> </input><input
+			type="submit" value="Submit">
+	</form>
+	<br>
 	<form name="query5" action="MainServlet" method="get">
 		<input type="text" name="queryNumber" value="5"></input> <br>
 		Disease Name: <input type="checkbox" name="diseaseName" value="AML">AML
-		<input type="checkbox" name="diseaseName" value="ALL">ALL <input
-			type="checkbox" name="diseaseName" value="Giloblastome">Giloblastome
+		<input type="checkbox" name="diseaseName" value="ALL">ALL 
+		<input type="checkbox" name="diseaseName" value="Giloblastome">Giloblastome
 		<input type="checkbox" name="diseaseName" value="Colon tumor">Colon
 		tumor <input type="checkbox" name="diseaseName" value="Breast tumor">Breast
 		tumor <input type="checkbox" name="diseaseName" value="Flu">Flu
 		<br> <input type="text" name="goID"></input> <input type="submit"
 			value="Submit">
 	</form>
-	
-	
-	<form name="query6" action="MainServlet" method="get">
-		<input type="text" name="queryNumber" value="6"></input> <br>
-		<input type="submit" name="query6_submit" value="Query 6"></input>
+	<br>
+	<form name="part3_a" action="MainServlet" method="get">
+		<input type="text" name="queryNumber" value="7"></input> <br>
+		Disease Name: <input type="text" name="diseaseName"></input>
+		<input type="submit" value="Submit">
 	</form>
 </body>
 </html>

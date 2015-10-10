@@ -47,7 +47,7 @@ public class MainServlet extends HttpServlet {
 				logger.info("Disease Type:" + diseaseType);
 				logger.info("Disease Description : " + diseaseDescription);
 				connection.handleQueryOne(diseaseName, diseaseType, diseaseDescription);
-				break;
+				break; 
 			}
 			case "2":{
 				String diseaseDescription = request.getParameter(StringUtility.DISEASE_DESCRIPTION);
@@ -65,14 +65,23 @@ public class MainServlet extends HttpServlet {
 				connection.handleQueryThree(diseaseName, measureUnitID, clusterID);
 				break;
 			}
-			case "5":
+			case "4":{
+				String diseaseName = request.getParameter(StringUtility.SELECTED_DISEASE);
+				Integer goID = Integer.valueOf(request.getParameter(StringUtility.GO_ID)); 
+				connection.handleQueryFour(diseaseName, goID);
+				break;
+			}
+			case "5": {
 				String[] diseaseNames = request.getParameterValues(StringUtility.DISEASE_NAME);
 				Integer goID = Integer.valueOf(request.getParameter(StringUtility.GO_ID));
 				connection.handleQueryFive(diseaseNames, goID);
 				break;
-			case "6":
-				connection.handleQuerySix();
-				break;
+			}
+			case "7": {
+				String diseaseName = request.getParameter(StringUtility.DISEASE_NAME);
+				logger.info("Disease Name:" + diseaseName);
+				connection.getInformativeGenes(diseaseName);
+			}
 		}
 	}
 
