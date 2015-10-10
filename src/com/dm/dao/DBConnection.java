@@ -203,7 +203,7 @@ public class DBConnection {
 		System.out.println("F-statistic value: " + fValue);
 	}
 
-	
+
 	/**
 	 * Handle query 6
 	 * @param diseaseDescription
@@ -212,7 +212,7 @@ public class DBConnection {
 		long startTime = System.currentTimeMillis();
 		Map<String, List<Double>> amlPatientExpressions = new HashMap<>();
 		Map<String, List<Double>> allPatientExpressions = new HashMap<>();
-		
+
 		try {
 			/* ALL Patients */
 			PreparedStatement statement = connection.prepareStatement(StringUtility.QUERY_6_A);
@@ -223,7 +223,7 @@ public class DBConnection {
 			while(rs.next()) {
 				String patientID = rs.getString(1);
 				double expression = Double.parseDouble(rs.getString(2));
-				
+
 				if (allPatientExpressions.containsKey(patientID))
 					allPatientExpressions.get(patientID).add(expression);
 				else {
@@ -232,7 +232,7 @@ public class DBConnection {
 					allPatientExpressions.put(patientID, expressionList);
 				}
 			}
-			
+
 			/* AML Patients */
 			statement = connection.prepareStatement(StringUtility.QUERY_6_B);
 			statement.setString(1, diseaseTwo);
@@ -251,17 +251,17 @@ public class DBConnection {
 					amlPatientExpressions.put(patientID, expressionList);
 				}
 			}
-			
+
 			/* Between ALL patients */
 			List<List<String>> allPatientCombinations = selfJoin(allPatientExpressions.keySet());
 			List<List<String>> amlAllPatientCombinations = join(amlPatientExpressions.keySet(), allPatientExpressions.keySet());
-			
+
 			double averageCorrelation_all = getAverageCorrelation(allPatientCombinations, allPatientExpressions, allPatientExpressions);
 			double averageCorrelation2_amlAll = getAverageCorrelation(amlAllPatientCombinations, amlPatientExpressions, allPatientExpressions);
 
 			System.out.println("Average correlation between ALL and ALL patients ==> " + averageCorrelation_all);
 			System.out.println("Average correlation between AML and ALL patients ==> " + averageCorrelation2_amlAll);
-			
+
 			System.out.println("Time taken: " + (System.currentTimeMillis() - startTime));
 		} catch (SQLException e) {
 			logger.warning(e.getMessage());
@@ -280,57 +280,59 @@ public class DBConnection {
 			sumOfCorrelations1 += correlation;
 		}
 		double averageCorrelation1 = sumOfCorrelations1/patientCombinations.size();
-		
+
 		return averageCorrelation1;
 	}
 
 	private static List<List<String>> selfJoin(Set<String> set) {
-		
-		List<String> x = new ArrayList<>(set);
-        List<List<String>> result = new ArrayList<>();
-        
-        for (int i = 0; i < x.size(); i++) {
-            String person1 = x.get(i);
-            for (int j = i + 1; j < x.size(); j++) {
 
-                String person2 = x.get(j);
-                
-                List<String> theseTwoPeople = new ArrayList<>();
-            	theseTwoPeople.add(person1);
-            	theseTwoPeople.add(person2);
-            	result.add(theseTwoPeople);
-            }
-        }
-        	
-        return result;
-    }
-	
+		List<String> x = new ArrayList<>(set);
+		List<List<String>> result = new ArrayList<>();
+
+		for (int i = 0; i < x.size(); i++) {
+			String person1 = x.get(i);
+			for (int j = i + 1; j < x.size(); j++) {
+
+				String person2 = x.get(j);
+
+				List<String> theseTwoPeople = new ArrayList<>();
+				theseTwoPeople.add(person1);
+				theseTwoPeople.add(person2);
+				result.add(theseTwoPeople);
+			}
+		}
+
+		return result;
+	}
+
 	private static List<List<String>> join(Set<String> x, Set<String> y) {
 
-        List<List<String>> result = new ArrayList<>();
-        
-        Iterator<String> iterator1 = x.iterator();
-        while (iterator1.hasNext()) {
-        	String person1 = iterator1.next();
+		List<List<String>> result = new ArrayList<>();
 
-            Iterator<String> iterator2 = y.iterator();
+		Iterator<String> iterator1 = x.iterator();
+		while (iterator1.hasNext()) {
+			String person1 = iterator1.next();
 
-            while (iterator2.hasNext()) {
-            	String person2 = iterator2.next();
-            	List<String> theseTwoPeople = new ArrayList<>();
-            	theseTwoPeople.add(person1);
-            	theseTwoPeople.add(person2);
-            	result.add(theseTwoPeople);
-            }
-        }
-        	
-        return result;
-    }
+			Iterator<String> iterator2 = y.iterator();
+
+			while (iterator2.hasNext()) {
+				String person2 = iterator2.next();
+				List<String> theseTwoPeople = new ArrayList<>();
+				theseTwoPeople.add(person1);
+				theseTwoPeople.add(person2);
+				result.add(theseTwoPeople);
+			}
+		}
+
+		return result;
+	}
 	/**
 	 * Get the informative genes for a disease
 	 * @param diseaseName
 	 */
 	public void getInformativeGenes(String diseaseName) {
+		informativeGenesString = "";
+		informativeGenes = new ArrayList<>();
 		HashMap<String, double[]> withDiseaseMap = new HashMap<String, double[]>();
 		HashMap<String, double[]> withoutDiseaseMap = new HashMap<String, double[]>();
 		PreparedStatement statement;
@@ -358,14 +360,16 @@ public class DBConnection {
 				informativeGenes.add(key);
 			}
 		}
-		populateAndPrintInformativeGenes();
+		populateAndPrintInformativeGenes(diseaseName);
 	}
 
 	/**
 	 * Classify patients
 	 */
-	public void classifyPatients(String diseaseName) {
-		getInformativeGenes(diseaseName);
+	public void classifyPatients(String diseaseName, boolean recalculateInformationGenes) {
+		if(recalculateInformationGenes) {
+			getInformativeGenes(diseaseName);
+		}
 		LinkedHashMap<String, double[]> oldPatientsWithDiseaseMap = new LinkedHashMap<>();
 		LinkedHashMap<String, double[]> oldPatientsWithoutDiseaseMap = new LinkedHashMap<>();
 		LinkedHashMap<String, double[]> newPatients = new LinkedHashMap<>();
@@ -379,8 +383,9 @@ public class DBConnection {
 				+ "inner join "
 				+ "(select * from clinical_sample where p_id in "
 				+ "(select distinct p_id from diagnosis where ds_id in "
-				+ "(select ds_id from disease where name = 'ALL')) "
-				+ "and s_id is not null) cs on mf.s_id=cs.s_id  where g.u_id in " + informativeGenesString + " order by cs.p_id, g.u_id";
+				+ "(select ds_id from disease where name = ?)) "
+				+ "and s_id is not null) cs on mf.s_id=cs.s_id  where g.u_id in "
+				+ "(select u_id from " + diseaseName.replaceAll("\\s", "_") + "_ig) order by cs.p_id, g.u_id";
 		String query2 = "select cs.p_id,g.u_id,mf.exp from microarray_fact mf "
 				+ "inner join "
 				+ "probe p on mf.pb_id = p.pb_id "
@@ -389,22 +394,26 @@ public class DBConnection {
 				+ "inner join "
 				+ "(select * from clinical_sample where p_id in "
 				+ "(select distinct p_id from diagnosis where ds_id in "
-				+ "(select ds_id from disease where name != 'ALL')) "
-				+ "and s_id is not null) cs on mf.s_id=cs.s_id  where g.u_id in " + informativeGenesString + " order by cs.p_id, g.u_id";
-		String query3 = "select * from test_samples where u_id in " + informativeGenesString + " order by u_id";
-		oldPatientsWithDiseaseMap = populateResultSet(query1);
-		oldPatientsWithoutDiseaseMap = populateResultSet(query2);
-		newPatients = populateResultSetForNewPatients(query3);
+				+ "(select ds_id from disease where name != ?)) "
+				+ "and s_id is not null) cs on mf.s_id=cs.s_id  where g.u_id in "
+				+ "(select u_id from " + diseaseName.replaceAll("\\s", "_") + "_ig) order by cs.p_id, g.u_id";
+		String query3 = "select * from test_samples where u_id in (select u_id from " + diseaseName.replaceAll("\\s", "_") + "_ig) order by u_id";
+		oldPatientsWithDiseaseMap = populateResultSet(query1, diseaseName);
+		oldPatientsWithoutDiseaseMap = populateResultSet(query2, diseaseName);
+		newPatients = populateResultSetForNewPatients(query3, diseaseName);
 
 		correlationWithDisease = calculateCorrelation(newPatients, oldPatientsWithDiseaseMap);
 		correlationWithoutDisease = calculateCorrelation(newPatients, oldPatientsWithoutDiseaseMap);
 
 		TTest test = new TTest();
 		for(int i = 0; i < correlationWithDisease.size(); i++) {
-			System.out.println(test.homoscedasticTTest(correlationWithDisease.get(i), 
-					correlationWithoutDisease.get(i)));
+			double p = test.homoscedasticTTest(correlationWithDisease.get(i), 
+					correlationWithoutDisease.get(i));
+			if(p < 0.01)
+				System.out.println("Patient " + (i+1) + "\tHas Disease: " + diseaseName + "\t " + p);
+			else
+				System.out.println("Patient " + (i+1) + "\tDoesn't have Disease: " + diseaseName + "\t " + p);
 		}
-
 	}
 
 	/**
@@ -412,14 +421,13 @@ public class DBConnection {
 	 * @param rs
 	 * @return
 	 */
-	private LinkedHashMap<String, double[]> populateResultSetForNewPatients(String query) {
+	private LinkedHashMap<String, double[]> populateResultSetForNewPatients(String query, String diseaseName) {
 		LinkedHashMap<String, double[]> toReturn = new LinkedHashMap<>();
 		ResultSet rs;
 
 		try {
 			PreparedStatement statement = connection.prepareStatement(query, 
 					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-//			statement.setString(1, informativeGenesString);
 			rs = statement.executeQuery();
 			rs.last();
 			int rows = rs.getRow();
@@ -448,7 +456,7 @@ public class DBConnection {
 	 * @param rs
 	 * @return
 	 */
-	private LinkedHashMap<String, double[]> populateResultSet(String query) {
+	private LinkedHashMap<String, double[]> populateResultSet(String query, String diseaseName) {
 
 		LinkedHashMap<String, ArrayList<Double>> tempList = new LinkedHashMap<String, ArrayList<Double>>();
 		LinkedHashMap<String, double[]> toReturn = new LinkedHashMap<>();
@@ -456,6 +464,7 @@ public class DBConnection {
 		try {
 			PreparedStatement statement = connection.prepareStatement(query, 
 					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			statement.setString(1, diseaseName);
 			rs = statement.executeQuery();
 			rs.setFetchSize(1000);
 			while(rs.next()) {
@@ -564,19 +573,51 @@ public class DBConnection {
 		}
 		return toReturn;
 	}
-	
+
 	/**
 	 * Populate and print the informative genes
 	 */
-	private void populateAndPrintInformativeGenes() {
+	private void populateAndPrintInformativeGenes(String diseaseName) {
 		System.out.println("\nInformative Genes: " + informativeGenes.size());
-		informativeGenesString = "(";
-		for(int i = 0; i < informativeGenes.size() - 1; i ++) {
-			System.out.println(informativeGenes.get(i));
-			informativeGenesString += "'" + informativeGenes.get(i)+ "',";
+		PreparedStatement statement;
+
+
+		try{
+			statement = connection.prepareStatement("CREATE TABLE " + diseaseName.replaceAll("\\s", "_") + "_IG (U_ID VARCHAR(26))");
+			statement.executeQuery();
+			statement = connection.prepareStatement("COMMIT");
+			statement.executeQuery();
+		}catch(SQLException e) {
+			if(e.getErrorCode() == 955) {
+				try {
+					statement = connection.prepareStatement("DROP TABLE " + diseaseName.replaceAll("\\s", "_") + "_IG");
+					statement.executeQuery();
+					statement = connection.prepareStatement("CREATE TABLE " + diseaseName.replaceAll("\\s", "_") + "_IG (U_ID VARCHAR(26))");
+					statement.executeQuery();
+					statement = connection.prepareStatement("COMMIT");
+					statement.executeQuery();
+				} catch (SQLException e1) {
+					logger.warning(e1.getMessage());
+				}
+			}
 		}
-		System.out.println(informativeGenes.get(informativeGenes.size() - 1));
-		informativeGenesString += "'" + informativeGenes.get(informativeGenes.size() - 1) + "')";
+		try{
+			statement = connection.prepareStatement("INSERT INTO " + diseaseName.replaceAll("\\s", "_") + "_IG VALUES(?)");
+			for(int i = 0; i < informativeGenes.size(); i++) {
+				statement.setString(1, informativeGenes.get(i));
+				statement.executeQuery();
+				System.out.println(informativeGenes.get(i));
+			}
+		} catch (SQLException e) {
+			logger.warning(e.getMessage());
+		}
+		//		/*informativeGenesString = "(";
+		//		for(int i = 0; i < informativeGenes.size() - 1; i ++) {
+		//			System.out.println(informativeGenes.get(i));
+		//			informativeGenesString += "'" + informativeGenes.get(i)+ "',";
+		//		}
+		//		System.out.println(informativeGenes.get(informativeGenes.size() - 1));
+		//		*/informativeGenesString += "'" + informativeGenes.get(informativeGenes.size() - 1) + "')";
 	}
 }
 

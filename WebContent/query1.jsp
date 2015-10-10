@@ -67,5 +67,12 @@
 		Disease Name: <input type="text" name="diseaseName"></input>
 		<input type="submit" value="Submit">
 	</form>
+	<br>
+	<form name="part3_b" action="MainServlet" method="get">
+		<input type="text" name="queryNumber" value="8"></input> <br>
+		Disease Name: <input type="text" name="diseaseName"></input>
+		<input type="checkbox" name="recalculateInformativeGenes" value="Recalculate Informative Genes?">Recalculate Informative Genes? 
+		<input type="submit" value="Submit">
+	</form>
 </body>
 </html>

@@ -39,10 +39,10 @@ public class MainServlet extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		connection = new DBConnection();
-		String queryNumber = request.getParameter("queryNumber");
+		int queryNumber = Integer.valueOf(request.getParameter("queryNumber"));
 		logger.info("Query: " + queryNumber);
 		switch (queryNumber) {
-			case "1": {
+			case 1: {
 				String diseaseName = request.getParameter(StringUtility.DISEASE_NAME);
 				String diseaseType = request.getParameter(StringUtility.DISEASE_TYPE);
 				String diseaseDescription = request.getParameter(StringUtility.DISEASE_DESCRIPTION);
@@ -52,13 +52,13 @@ public class MainServlet extends HttpServlet {
 				connection.handleQueryOne(diseaseName, diseaseType, diseaseDescription);
 				break;
 			}
-			case "2": {
+			case 2: {
 				String diseaseDescription = request.getParameter(StringUtility.DISEASE_DESCRIPTION);
 				logger.info("Disease Description : " + diseaseDescription);
 				connection.handleQueryTwo(diseaseDescription);
 				break;
 			}
-			case "3": {
+			case 3: {
 				String diseaseName = request.getParameter(StringUtility.DISEASE_NAME);
 				String measureUnitID = request.getParameter(StringUtility.MEASURE_UNIT_ID);
 				String clusterID = request.getParameter(StringUtility.CLUSTER_ID);
@@ -68,19 +68,19 @@ public class MainServlet extends HttpServlet {
 				connection.handleQueryThree(diseaseName, measureUnitID, clusterID);
 				break;
 			}
-			case "4": {
+			case 4: {
 				String diseaseName = request.getParameter(StringUtility.SELECTED_DISEASE);
 				Integer goID = Integer.valueOf(request.getParameter(StringUtility.GO_ID));
 				connection.handleQueryFour(diseaseName, goID);
 				break;
 			}
-			case "5": {
+			case 5: {
 				String[] diseaseNames = request.getParameterValues(StringUtility.DISEASE_NAME);
 				Integer goID = Integer.valueOf(request.getParameter(StringUtility.GO_ID));
 				connection.handleQueryFive(diseaseNames, goID);
 				break;
 			}
-			case "6":
+			case 6:
 				String diseaseOne = request.getParameter(StringUtility.DISEASE_ONE);
 				String diseaseTwo = request.getParameter(StringUtility.DISEASE_TWO);
 				String goID = request.getParameter(StringUtility.GO_ID);
@@ -89,16 +89,24 @@ public class MainServlet extends HttpServlet {
 				logger.info(goID);
 				connection.handleQuerySix(diseaseOne, diseaseTwo, goID);
 				break;
-			case "7": {
+			case 7: {
 				String diseaseName = request.getParameter(StringUtility.DISEASE_NAME);
 				logger.info("Disease Name:" + diseaseName);
 				connection.getInformativeGenes(diseaseName);
 				break;
 			}
-			case "8": {
+			case 8: {
 				String diseaseName = request.getParameter(StringUtility.DISEASE_NAME);
+				String[] recalculateInformativeGenes = 
+						request.getParameterValues(StringUtility.RECALCULATE_INFORMATIVE_GENES);
+				boolean calInfoGenes = false;
+				if(recalculateInformativeGenes != null) {
+					calInfoGenes = true;
+				}
 				logger.info("Disease Name:" + diseaseName);
-					connection.classifyPatients(diseaseName);
+				logger.info("Recalculate Informative Genes: " + calInfoGenes);
+				connection.classifyPatients(diseaseName, calInfoGenes);
+				break;
 			}
 		}
 	}
