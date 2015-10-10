@@ -8,7 +8,6 @@ public class StringUtility {
 	public static final String MEASURE_UNIT_ID = "measureUnitID";
 	public static final String CLUSTER_ID = "clusterID";
 	public static final String GO_ID = "goID";
-	public static final String SELECTED_DISEASE = "selectedDisease";
 	public static final String DISEASE_ONE = "diseaseOne";
 	public static final String DISEASE_TWO = "diseaseTwo";
 	public static final String RECALCULATE_INFORMATIVE_GENES = "recalculateInformativeGenes";

@@ -69,7 +69,7 @@ public class MainServlet extends HttpServlet {
 				break;
 			}
 			case 4: {
-				String diseaseName = request.getParameter(StringUtility.SELECTED_DISEASE);
+				String diseaseName = request.getParameter(StringUtility.DISEASE_NAME);
 				Integer goID = Integer.valueOf(request.getParameter(StringUtility.GO_ID));
 				connection.handleQueryFour(diseaseName, goID);
 				break;
