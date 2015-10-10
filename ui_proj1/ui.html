@@ -176,6 +176,26 @@
 			</fieldset>
 		</form><br/><br/>
 
+		<form name="part3_a" action="MainServlet" method="get">
+			<fieldset>
+				<legend>Query 7 (Part 3a) </legend>
+				<input type="hidden" name="queryNumber" value="7"></input> <br>
+				
+				<label for="diseaseName"><span>Disease name</span>
+				<select name="diseaseName" class="select-field">
+					<option value="ALL">ALL</option>
+					<option value="AML" selected>AML</option>
+					<option value="Giloblastome">Giloblastome</option>
+					<option value="Colon tumor">Colon tumor</option>
+					<option value="Breast tumor">Breast tumor</option>
+					<option value="Flu">Flu</option>
+				</select>
+				</label>
+				
+				<label><span>&nbsp;</span><input type="submit" value="Run query" /></label>
+			</fieldset>
+		</form><br/><br/>
+
 		</div>
 	</body>
 </html>
