@@ -9,6 +9,8 @@ public class StringUtility {
 	public static final String CLUSTER_ID = "clusterID";
 	public static final String GO_ID = "goID";
 	public static final String SELECTED_DISEASE = "selectedDisease";
+	public static final String DISEASE_ONE = "diseaseOne";
+	public static final String DISEASE_TWO = "diseaseTwo";
 	
 	public static final String QUERY_1 = "select d.name,count(dm.p_id) from diagnosis dm "
 			+ "inner join disease d on (dm.ds_id = d.ds_id) where d.name = ? group by d.name "
@@ -50,6 +52,16 @@ public class StringUtility {
 			+ "s_id in (select s_id from clinical_fact where p_id in "
 			+ "(select distinct p_id from diagnosis where ds_id in "
 			+ "(select ds_id from disease where name = ?)) and s_id is not null)";
+	
+	public static String QUERY_6_A = "SELECT diag.P_ID, mrna.EXP FROM MICROARRAY_FACT mrna, SAMPLE samp, CLINICAL_FACT clinfact, DIAGNOSIS diag "
+			+ "WHERE mrna.S_ID = samp.S_ID AND samp.S_ID = clinfact.S_ID AND clinfact.P_ID = diag.P_ID AND diag.DS_ID IN "
+			+ "(SELECT DS_ID FROM DISEASE WHERE NAME = ? ) AND mrna.PB_ID IN "
+			+ "(SELECT prob.PB_ID FROM PROBE prob, GENE_FACT genefact WHERE genefact.GO_ID = ? AND genefact.U_ID = prob.U_ID )";
+	
+	public static String QUERY_6_B = "SELECT diag.P_ID, mrna.EXP FROM MICROARRAY_FACT mrna, SAMPLE samp, CLINICAL_FACT clinfact, DIAGNOSIS diag "
+			+ "WHERE mrna.S_ID = samp.S_ID AND samp.S_ID = clinfact.S_ID AND clinfact.P_ID = diag.P_ID AND diag.DS_ID IN "
+			+ "(SELECT DS_ID FROM DISEASE WHERE NAME = ? ) AND mrna.PB_ID IN "
+			+ "(SELECT prob.PB_ID FROM PROBE prob, GENE_FACT genefact WHERE genefact.GO_ID = ? AND genefact.U_ID = prob.U_ID )";
 	
 	public static final String PART_3_A_1 = "select g.u_id, mf.exp from microarray_fact mf "
 			+ "inner join probe p on mf.pb_id = p.pb_id "

@@ -7,7 +7,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
@@ -199,6 +203,129 @@ public class DBConnection {
 		System.out.println("F-statistic value: " + fValue);
 	}
 
+	
+	/**
+	 * Handle query 6
+	 * @param diseaseDescription
+	 */
+	public void handleQuerySix(String diseaseOne, String diseaseTwo, String goID) {
+		long startTime = System.currentTimeMillis();
+		Map<String, List<Double>> amlPatientExpressions = new HashMap<>();
+		Map<String, List<Double>> allPatientExpressions = new HashMap<>();
+		
+		try {
+			/* ALL Patients */
+			PreparedStatement statement = connection.prepareStatement(StringUtility.QUERY_6_A);
+			statement.setString(1, diseaseOne);
+			statement.setString(2, goID);
+			ResultSet rs = statement.executeQuery();
+			rs.setFetchSize(3000);
+			while(rs.next()) {
+				String patientID = rs.getString(1);
+				double expression = Double.parseDouble(rs.getString(2));
+				
+				if (allPatientExpressions.containsKey(patientID))
+					allPatientExpressions.get(patientID).add(expression);
+				else {
+					List<Double> expressionList = new ArrayList<>();
+					expressionList.add(expression);
+					allPatientExpressions.put(patientID, expressionList);
+				}
+			}
+			
+			/* AML Patients */
+			statement = connection.prepareStatement(StringUtility.QUERY_6_B);
+			statement.setString(1, diseaseTwo);
+			statement.setString(2, goID);
+			rs = statement.executeQuery();
+			rs.setFetchSize(3000);
+			while(rs.next()) {
+				String patientID = rs.getString(1);
+				double expression = Double.parseDouble(rs.getString(2));
+
+				if (amlPatientExpressions.containsKey(patientID))
+					amlPatientExpressions.get(patientID).add(expression);
+				else {
+					List<Double> expressionList = new ArrayList<>();
+					expressionList.add(expression);
+					amlPatientExpressions.put(patientID, expressionList);
+				}
+			}
+			
+			/* Between ALL patients */
+			List<List<String>> allPatientCombinations = selfJoin(allPatientExpressions.keySet());
+			List<List<String>> amlAllPatientCombinations = join(amlPatientExpressions.keySet(), allPatientExpressions.keySet());
+			
+			double averageCorrelation_all = getAverageCorrelation(allPatientCombinations, allPatientExpressions, allPatientExpressions);
+			double averageCorrelation2_amlAll = getAverageCorrelation(amlAllPatientCombinations, amlPatientExpressions, allPatientExpressions);
+
+			System.out.println("Average correlation between ALL and ALL patients ==> " + averageCorrelation_all);
+			System.out.println("Average correlation between AML and ALL patients ==> " + averageCorrelation2_amlAll);
+			
+			System.out.println("Time taken: " + (System.currentTimeMillis() - startTime));
+		} catch (SQLException e) {
+			logger.warning(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	private double getAverageCorrelation(List<List<String>> patientCombinations, Map<String, List<Double>> amlPatientExpressions, Map<String, List<Double>> allPatientExpressions) {
+
+		double sumOfCorrelations1 = 0;
+		for (List<String> patientPair: patientCombinations) {
+			PearsonsCorrelation pearsons = new PearsonsCorrelation();
+			List<Double> firstPatientsExpressions = amlPatientExpressions.get(patientPair.get(0));
+			List<Double> secondPatientsExpressions = allPatientExpressions.get(patientPair.get(1));
+			double correlation = pearsons.correlation(firstPatientsExpressions.stream().mapToDouble(d -> d).toArray(), secondPatientsExpressions.stream().mapToDouble(d -> d).toArray());
+			sumOfCorrelations1 += correlation;
+		}
+		double averageCorrelation1 = sumOfCorrelations1/patientCombinations.size();
+		
+		return averageCorrelation1;
+	}
+
+	private static List<List<String>> selfJoin(Set<String> set) {
+		
+		List<String> x = new ArrayList<>(set);
+        List<List<String>> result = new ArrayList<>();
+        
+        for (int i = 0; i < x.size(); i++) {
+            String person1 = x.get(i);
+            for (int j = i + 1; j < x.size(); j++) {
+
+                String person2 = x.get(j);
+                
+                List<String> theseTwoPeople = new ArrayList<>();
+            	theseTwoPeople.add(person1);
+            	theseTwoPeople.add(person2);
+            	result.add(theseTwoPeople);
+            }
+        }
+        	
+        return result;
+    }
+	
+	private static List<List<String>> join(Set<String> x, Set<String> y) {
+
+        List<List<String>> result = new ArrayList<>();
+        
+        Iterator<String> iterator1 = x.iterator();
+        while (iterator1.hasNext()) {
+        	String person1 = iterator1.next();
+
+            Iterator<String> iterator2 = y.iterator();
+
+            while (iterator2.hasNext()) {
+            	String person2 = iterator2.next();
+            	List<String> theseTwoPeople = new ArrayList<>();
+            	theseTwoPeople.add(person1);
+            	theseTwoPeople.add(person2);
+            	result.add(theseTwoPeople);
+            }
+        }
+        	
+        return result;
+    }
 	/**
 	 * Get the informative genes for a disease
 	 * @param diseaseName
@@ -232,13 +359,13 @@ public class DBConnection {
 			}
 		}
 		populateAndPrintInformativeGenes();
-		classifyPatients(); 
 	}
 
 	/**
 	 * Classify patients
 	 */
-	public void classifyPatients() {
+	public void classifyPatients(String diseaseName) {
+		getInformativeGenes(diseaseName);
 		LinkedHashMap<String, double[]> oldPatientsWithDiseaseMap = new LinkedHashMap<>();
 		LinkedHashMap<String, double[]> oldPatientsWithoutDiseaseMap = new LinkedHashMap<>();
 		LinkedHashMap<String, double[]> newPatients = new LinkedHashMap<>();

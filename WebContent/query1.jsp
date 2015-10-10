@@ -54,6 +54,14 @@
 			value="Submit">
 	</form>
 	<br>
+	<form name="query6" action="MainServlet" method="get">
+		<input type="text" name="queryNumber" value="6"></input> <br>
+		Disease One: <input type="text" name="diseaseOne"></input><br>
+		Disease Two: <input type="text" name="diseaseTwo"></input><br>
+		GO ID: <input type="text" name="goID"></input><br>
+		<input type="submit" name="query6_submit" value="Query 6"></input>
+	</form>
+	<br>
 	<form name="part3_a" action="MainServlet" method="get">
 		<input type="text" name="queryNumber" value="7"></input> <br>
 		Disease Name: <input type="text" name="diseaseName"></input>
