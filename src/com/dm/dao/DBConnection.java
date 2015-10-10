@@ -60,9 +60,11 @@ public class DBConnection {
 	 * @param diseaseType
 	 * @param diseaseDescription
 	 */
-	public void handleQueryOne(String diseaseName, String diseaseType, 
+	public ArrayList<String> handleQueryOne(String diseaseName, String diseaseType, 
 			String diseaseDescription) {
+		ArrayList<String> result = new ArrayList<>();
 		long startTime = System.currentTimeMillis();
+
 
 		try {
 			PreparedStatement statement = connection.prepareStatement(StringUtility.QUERY_1);
@@ -70,35 +72,37 @@ public class DBConnection {
 			statement.setString(2, diseaseType);
 			statement.setString(3, diseaseDescription);
 			ResultSet rs = statement.executeQuery();
-			System.out.println("NAME | COUNT(P_ID)");
 			while(rs.next()) {
-				System.out.println(rs.getString(1) + " | " + rs.getInt(2));
+				result.add(rs.getString(1) + "|" + rs.getInt(2));
 			}
-			System.out.println("Time taken: " + (System.currentTimeMillis() - startTime));
+			logger.info("Time taken: " + (System.currentTimeMillis() - startTime));
+
 		} catch (SQLException e) {
 			logger.warning(e.getMessage());
 		}
+		return result;
 	}
 
 	/**
 	 * Handle query 2
 	 * @param diseaseDescription
 	 */
-	public void handleQueryTwo(String diseaseDescription) {
+	public ArrayList<String> handleQueryTwo(String diseaseDescription) {
+		ArrayList<String> result = new ArrayList<>();
 		long startTime = System.currentTimeMillis();
 
 		try {
 			PreparedStatement statement = connection.prepareStatement(StringUtility.QUERY_2);
 			statement.setString(1, diseaseDescription);
 			ResultSet rs = statement.executeQuery();
-			System.out.println("TYPE");
 			while(rs.next()) {
-				System.out.println(rs.getString(1));
+				result.add(rs.getString(1));
 			}
-			System.out.println("Time taken: " + (System.currentTimeMillis() - startTime));
+			logger.info("Time taken: " + (System.currentTimeMillis() - startTime));
 		} catch (SQLException e) {
 			logger.warning(e.getMessage());
 		}
+		return result;
 	}
 
 	/**
@@ -107,7 +111,8 @@ public class DBConnection {
 	 * @param measureUnitID
 	 * @param clusterID
 	 */
-	public void handleQueryThree(String diseaseName, String measureUnitID, String clusterID) {
+	public ArrayList<String> handleQueryThree(String diseaseName, String measureUnitID, String clusterID) {
+		ArrayList<String> result = new ArrayList<>();
 		long startTime = System.currentTimeMillis();
 
 		try {
@@ -117,17 +122,17 @@ public class DBConnection {
 			statement.setString(3, measureUnitID);
 			ResultSet rs = statement.executeQuery();
 			rs.setFetchSize(3000);
-			System.out.println("EXP");
 			int count = 0;
 			while(rs.next()) {
+				result.add(rs.getString(1));
 				count++;
-				System.out.println(rs.getString(1));
 			}
-			System.out.println("Rows retrieved: " + count);
-			System.out.println("Time taken: " + (System.currentTimeMillis() - startTime));
+			logger.info("Number of rows: " + count);
+			logger.info("Time taken: " + (System.currentTimeMillis() - startTime));
 		} catch (SQLException e) {
 			logger.warning(e.getMessage());
 		}
+		return result;
 	}
 
 	/**
@@ -135,12 +140,13 @@ public class DBConnection {
 	 * @param diseaseNames
 	 * @param go_id
 	 */
-	public void handleQueryFour(String diseaseName,  Integer goID)
+	public ArrayList<String> handleQueryFour(String diseaseName,  Integer goID)
 	{
 		long startTime = System.currentTimeMillis();
 		TTest tt = new TTest();
 		double[] withDisease;
 		double[] withoutDisease;
+		ArrayList<String> result = new ArrayList<>();
 
 		PreparedStatement statement;
 		try {
@@ -158,12 +164,12 @@ public class DBConnection {
 			withoutDisease = populateResultSet(statement);
 
 			double tstat = tt.homoscedasticT(withDisease, withoutDisease);
-			System.out.println("Time taken: " + (System.currentTimeMillis() - startTime));
-			System.out.println("T-Stat Value : " + tstat);
+			logger.info("Time taken: " + (System.currentTimeMillis() - startTime));
+			result.add(String.valueOf(tstat));
 		} catch (SQLException e) {
 			logger.warning(e.getMessage());
 		}
-
+		return result;
 	}
 
 
@@ -172,10 +178,12 @@ public class DBConnection {
 	 * @param diseaseNames
 	 * @param go_id
 	 */
-	public void handleQueryFive(String[] diseaseNames, Integer goID) {
+	public ArrayList<String> handleQueryFive(String[] diseaseNames, Integer goID) {
 		long startTime = System.currentTimeMillis();
 		OneWayAnova owa = new OneWayAnova();
 		Collection<double[]> list = new ArrayList<double[]>();
+		ArrayList<String> result = new ArrayList<>();
+
 		for(int i = 0; i < diseaseNames.length; i++) {
 			PreparedStatement statement;
 			try {
@@ -199,17 +207,20 @@ public class DBConnection {
 			}
 		}
 		double fValue = owa.anovaFValue(list);
-		System.out.println("Time taken: " + (System.currentTimeMillis() - startTime));
-		System.out.println("F-statistic value: " + fValue);
+		logger.info("Time taken: " + (System.currentTimeMillis() - startTime));
+		result.add(String.valueOf(fValue));
+		return result;
 	}
 
 
 	/**
 	 * Handle query 6
+	 * @param howManyDiseases 
 	 * @param diseaseDescription
 	 */
-	public void handleQuerySix(String diseaseOne, String diseaseTwo, String goID) {
+	public ArrayList<String> handleQuerySix(String diseaseOne, String diseaseTwo, String goID, String howManyDiseases) {
 		long startTime = System.currentTimeMillis();
+		ArrayList<String> result = new ArrayList<>();
 		Map<String, List<Double>> amlPatientExpressions = new HashMap<>();
 		Map<String, List<Double>> allPatientExpressions = new HashMap<>();
 
@@ -252,33 +263,47 @@ public class DBConnection {
 				}
 			}
 
-			/* Between ALL patients */
 			List<List<String>> allPatientCombinations = selfJoin(allPatientExpressions.keySet());
 			List<List<String>> amlAllPatientCombinations = join(amlPatientExpressions.keySet(), allPatientExpressions.keySet());
 
-			double averageCorrelation_all = getAverageCorrelation(allPatientCombinations, allPatientExpressions, allPatientExpressions);
-			double averageCorrelation2_amlAll = getAverageCorrelation(amlAllPatientCombinations, amlPatientExpressions, allPatientExpressions);
+			if (howManyDiseases.equalsIgnoreCase("one")) {
+				/* Between ALL patients */
+				double averageCorrelation_all = getAverageCorrelation(allPatientCombinations, allPatientExpressions, allPatientExpressions);
+				System.out.println("Average correlation between ALL and ALL patients ==> " + averageCorrelation_all);
+				result.add(String.valueOf(averageCorrelation_all));
+			} else if (howManyDiseases.equalsIgnoreCase("two")) {
+				double averageCorrelation2_amlAll = getAverageCorrelation(amlAllPatientCombinations, amlPatientExpressions, allPatientExpressions);
+				System.out.println("Average correlation between AML and ALL patients ==> " + averageCorrelation2_amlAll);
+				result.add(String.valueOf(averageCorrelation2_amlAll));
+			}
 
-			System.out.println("Average correlation between ALL and ALL patients ==> " + averageCorrelation_all);
-			System.out.println("Average correlation between AML and ALL patients ==> " + averageCorrelation2_amlAll);
-
+			System.out.println("diseaseOne ==> " + diseaseOne);
+			System.out.println("diseaseTwo ==> " + diseaseTwo);
+			System.out.println("goID ==> " + goID);
+			System.out.println("howManyDiseases ==> " + howManyDiseases);
+			
 			System.out.println("Time taken: " + (System.currentTimeMillis() - startTime));
 		} catch (SQLException e) {
 			logger.warning(e.getMessage());
 			e.printStackTrace();
 		}
+		return result;
 	}
 
 	private double getAverageCorrelation(List<List<String>> patientCombinations, Map<String, List<Double>> amlPatientExpressions, Map<String, List<Double>> allPatientExpressions) {
 
 		double sumOfCorrelations1 = 0;
+		System.out.print("Crrelations ==> ");
 		for (List<String> patientPair: patientCombinations) {
 			PearsonsCorrelation pearsons = new PearsonsCorrelation();
 			List<Double> firstPatientsExpressions = amlPatientExpressions.get(patientPair.get(0));
 			List<Double> secondPatientsExpressions = allPatientExpressions.get(patientPair.get(1));
 			double correlation = pearsons.correlation(firstPatientsExpressions.stream().mapToDouble(d -> d).toArray(), secondPatientsExpressions.stream().mapToDouble(d -> d).toArray());
 			sumOfCorrelations1 += correlation;
+			System.out.print(correlation);
 		}
+		System.out.println("\nSum of correlations: " + sumOfCorrelations1);
+		
 		double averageCorrelation1 = sumOfCorrelations1/patientCombinations.size();
 
 		return averageCorrelation1;
@@ -330,7 +355,7 @@ public class DBConnection {
 	 * Get the informative genes for a disease
 	 * @param diseaseName
 	 */
-	public void getInformativeGenes(String diseaseName) {
+	public ArrayList<String> getInformativeGenes(String diseaseName) {
 		informativeGenesString = "";
 		informativeGenes = new ArrayList<>();
 		HashMap<String, double[]> withDiseaseMap = new HashMap<String, double[]>();
@@ -361,15 +386,18 @@ public class DBConnection {
 			}
 		}
 		populateAndPrintInformativeGenes(diseaseName);
+		return informativeGenes;
 	}
 
 	/**
 	 * Classify patients
 	 */
-	public void classifyPatients(String diseaseName, boolean recalculateInformationGenes) {
+	public ArrayList<String> classifyPatients(String diseaseName, boolean recalculateInformationGenes) {
 		if(recalculateInformationGenes) {
 			getInformativeGenes(diseaseName);
 		}
+		
+		ArrayList<String> result = new ArrayList<>();
 		LinkedHashMap<String, double[]> oldPatientsWithDiseaseMap = new LinkedHashMap<>();
 		LinkedHashMap<String, double[]> oldPatientsWithoutDiseaseMap = new LinkedHashMap<>();
 		LinkedHashMap<String, double[]> newPatients = new LinkedHashMap<>();
@@ -410,10 +438,11 @@ public class DBConnection {
 			double p = test.homoscedasticTTest(correlationWithDisease.get(i), 
 					correlationWithoutDisease.get(i));
 			if(p < 0.01)
-				System.out.println("Patient " + (i+1) + "\tHas Disease: " + diseaseName + "\t " + p);
+				result.add("Patient " + (i+1) + "|YES|" + p);
 			else
-				System.out.println("Patient " + (i+1) + "\tDoesn't have Disease: " + diseaseName + "\t " + p);
+				result.add("Patient " + (i+1) + "|NO|" + p);
 		}
+		return result;
 	}
 
 	/**
@@ -606,7 +635,6 @@ public class DBConnection {
 			for(int i = 0; i < informativeGenes.size(); i++) {
 				statement.setString(1, informativeGenes.get(i));
 				statement.executeQuery();
-				System.out.println(informativeGenes.get(i));
 			}
 		} catch (SQLException e) {
 			logger.warning(e.getMessage());

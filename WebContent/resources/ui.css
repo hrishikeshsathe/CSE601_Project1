@@ -1,0 +1,115 @@
+html {
+    height: 100%;
+    /*Image only BG fallback*/
+    background: url('bg3.jpg');
+    /*background = gradient + image pattern combo*/
+    /* http://thecodeplayer.com/uploads/media/gs.png */
+}
+
+form {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+
+.form-style-3 {
+    margin-top: 40px;
+    margin-left: 40px;
+    max-width: 380px;
+    font-family: Junction;
+    font-weight: normal;
+    font-size: 14px;
+    color: #9191B0;
+}
+
+.form-style-3 h1 {
+    font-family: Junction;
+    font-weight: normal;
+    font-size: 34px;
+    color: #FFFFFF;
+}
+
+.form-style-3 label{
+    display:block;
+    margin-bottom: 10px;
+}
+.form-style-3 label > span {
+    float: left;
+    width: 45%;
+    color: #9191B0;
+    font-family: Junction;
+    font-weight: normal;
+    font-size: 14px;
+}
+.form-style-3 fieldset {
+    align: center;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    margin: 0px 0px 10px 0px;
+    border: 1px solid #3D3D3D;
+    padding: 20px;
+    background: #272727;
+    box-shadow: inset 0px 0px 15px #3D3D3D;
+    -moz-box-shadow: inset 0px 0px 15px #3D3D3D;
+    -webkit-box-shadow: inset 0px 0px 15px #3D3D3D;
+}
+.form-style-3 fieldset legend {
+    color: #FFFFFF;
+    border-top: 1px solid #3D3D3D;
+    border-left: 1px solid #3D3D3D;
+    border-right: 1px solid #3D3D3D;
+    border-radius: 5px 5px 0px 0px;
+    -webkit-border-radius: 5px 5px 0px 0px;
+    -moz-border-radius: 5px 5px 0px 0px;
+    background: #272727;
+    padding: 0px 8px 3px 8px;
+    box-shadow: -0px -1px 2px #3D3D3D;
+    -moz-box-shadow:-0px -1px 2px #3D3D3D;
+    -webkit-box-shadow:-0px -1px 2px #3D3D3D;
+    font-weight: normal;
+    font-family: Junction;
+    font-size: 16px;
+}
+.form-style-3 textarea{
+    width:250px;
+    height:100px;
+}
+.form-style-3 input[type=text],
+.form-style-3 input[type=date],
+.form-style-3 input[type=datetime],
+.form-style-3 input[type=number],
+.form-style-3 input[type=search],
+.form-style-3 input[type=time],
+.form-style-3 input[type=url],
+.form-style-3 input[type=email],
+.form-style-3 select, 
+.form-style-3 textarea {
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border: 1px solid #4747B2;
+    outline: none;
+    color: #59599C;
+    padding: 5px 8px 5px 8px;
+    box-shadow: inset 1px 1px 4px #000049;
+    -moz-box-shadow: inset 1px 1px 4px #000049;
+    -webkit-box-shadow: inset 1px 1px 4px #000049;
+    background: #FFEFF6;
+    width:50%;
+}
+.form-style-3  input[type=submit],
+.form-style-3  input[type=button] {
+    background: #9191B0;
+    border: 1px solid #19195B;
+    padding: 5px 15px 5px 15px;
+    color: #272727;
+    box-shadow: inset -1px -1px 3px #19195B;
+    -moz-box-shadow: inset -1px -1px 3px #19195B;
+    -webkit-box-shadow: inset -1px -1px 3px #19195B;
+    border-radius: 3px;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;    
+    font-weight: bold;
+}

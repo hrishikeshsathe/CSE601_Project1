@@ -5,10 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<link rel="stylesheet" href="/resources/ui.css">
-<link rel="stylesheet"
-	href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css"
-	type="text/css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/ui.css" />
 <title>Project 1: Data</title>
 </head>
 
@@ -22,7 +19,7 @@
 			<fieldset>
 				<legend>Query 1</legend>
 				<input type="hidden" name="queryNumber" value="1"></input> <br>
-
+ List number of patients who had:
 				<label for="diseaseName"><span>Disease name</span> <select
 					name="diseaseName" class="select-field">
 						<option value="ALL">ALL</option>
@@ -50,9 +47,9 @@
 
 		<form name="query2" action="MainServlet" method="get">
 			<fieldset>
-				<legend>Query 2</legend>
+				<legend>Query 2 </legend>
 				<input type="hidden" name="queryNumber" value="2"></input> <br>
-
+Types of drugs used with
 				<label for="diseaseDescription"><span>Disease
 						description</span> <select name="diseaseDescription" class="select-field">
 						<option value="tumor" selected>Tumor</option>
@@ -68,7 +65,7 @@
 			<fieldset>
 				<legend>Query 3</legend>
 				<input type="hidden" name="queryNumber" value="3"></input> <br>
-
+ List expression of probes with following
 				<label for="field1"><span>Disease name</span> <select
 					name="diseaseName" class="select-field">
 						<option value="ALL">ALL</option>
@@ -91,7 +88,7 @@
 			<fieldset>
 				<legend>Query 4</legend>
 				<input type="hidden" name="queryNumber" value="4"></input> <br>
-
+ Calculate T statistics for probes with following
 				<label for="diseaseName"><span>Disease name</span> <select
 					name="diseaseName" class="select-field">
 						<option value="ALL">ALL</option>
@@ -101,7 +98,7 @@
 						<option value="Breast tumor">Breast tumor</option>
 						<option value="Flu">Flu</option>
 				</select> </label> <label for="goID"><span>GO ID</span> <input type="text"
-					class="input-field" name="goID" value="" /></label> <label><span>&nbsp;</span><input
+					class="input-field" name="goID" value="0007154" /></label> <label><span>&nbsp;</span><input
 					type="submit" value="Run query" /></label>
 			</fieldset>
 		</form>
@@ -112,9 +109,9 @@
 
 		<form name="query5" action="MainServlet" method="get">
 			<fieldset>
-				<legend>Query 5</legend>
+				<legend>Query 5 </legend>
 				<input type="hidden" name="queryNumber" value="5"></input> <br>
-
+Calculate F statistics for probes with following
 				<label for="field1"><span>Disease name</span> <input type="checkbox" name="diseaseName" value="AML">AML
 		<input type="checkbox" name="diseaseName" value="ALL">ALL 
 		<input type="checkbox" name="diseaseName" value="Giloblastome">Giloblastome
@@ -122,7 +119,7 @@
 		tumor <input type="checkbox" name="diseaseName" value="Breast tumor">Breast
 		tumor <input type="checkbox" name="diseaseName" value="Flu">Flu
  </label><br> <label for="goID"><span>GO ID</span> <input type="text"
-					class="input-field" name="goID" value="" /></label> <label><span>&nbsp;</span><input
+					class="input-field" name="goID" value="0007154" /></label> <label><span>&nbsp;</span><input
 					type="submit" value="Run query" /></label>
 			</fieldset>
 		</form>
@@ -133,9 +130,9 @@
 			<fieldset>
 				<legend>Query 6</legend>
 				<input type="hidden" name="queryNumber" value="6"></input> <br>
-
+ 				Calculate expression values for probes with following
 				<label for="howManyDiseases"> <span>No. of diseases</span> <input
-					type="radio" name="howManyDiseases" value="one">One disease<br>
+					type="radio" name="howManyDiseases" value="one" checked="checked">One disease<br>
 					<span>&nbsp;</span><input type="radio" name="howManyDiseases"
 					value="two">Two diseases<br>
 				</label> <label for="diseaseName1"><span>Disease 1</span> <select
@@ -155,7 +152,7 @@
 						<option value="Breast tumor">Breast tumor</option>
 						<option value="Flu">Flu</option>
 				</select> </label> <label for="goID"><span>GO ID</span> <input type="text"
-					class="input-field" name="goID" value="" /></label> <label><span>&nbsp;</span><input
+					class="input-field" name="goID" value="0007154" /></label> <label><span>&nbsp;</span><input
 					type="submit" value="Run query" /></label>
 			</fieldset>
 		</form>
@@ -166,7 +163,7 @@
 			<fieldset>
 				<legend>Query 7 (Part 3a) </legend>
 				<input type="hidden" name="queryNumber" value="7"></input> <br>
-
+Calculate informative genes:
 				<label for="diseaseName"><span>Disease name</span> <select
 					name="diseaseName" class="select-field">
 						<option value="ALL">ALL</option>
@@ -185,7 +182,7 @@
 			<fieldset>
 				<legend>Query 8 (Part 3b) </legend>
 				<input type="hidden" name="queryNumber" value="8"></input> <br>
-
+Classify patients:
 				<label for="diseaseName"><span>Disease name</span> <select
 					name="diseaseName" class="select-field">
 						<option value="ALL">ALL</option>
